@@ -1,0 +1,14 @@
+<suitelet scriptid="customscript_del_sl_guid">
+    <defaultfunction>onRequest</defaultfunction>
+    <name>DEL GUID SL</name>
+    <notifyowner>T</notifyowner>
+    <scriptfile>[/SuiteScripts/DestinyEntertainments/DEL SFTP Test/del_sl_guid.js]</scriptfile>
+    <scriptdeployments>
+        <scriptdeployment scriptid="customdeploy_del_sl_guid">
+            <isdeployed>T</isdeployed>
+            <loglevel>DEBUG</loglevel>
+            <status>TESTING</status>
+            <title>DEL GUID SL</title>
+        </scriptdeployment>
+    </scriptdeployments>
+</suitelet>
