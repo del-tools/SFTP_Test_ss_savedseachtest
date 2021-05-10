@@ -89,7 +89,7 @@ define(['N/sftp', 'N/file', 'N/log', 'N/search', 'N/task'],
                   taskId: myTaskId
                 });
                 
-                log.debug({title:"Task Status", details:taskStatus});
+                log.debug("Task Status", taskStatus);
   
                 if (taskStatus.status === task.TaskStatus.COMPLETE) {
                   const testFile = file.load({

@@ -32,7 +32,7 @@ define(['N/https', 'N/ui/serverWidget', 'N/ui/message', 'N/url', 'N/log'],
             restrictToDomains: ['ftp.tronios.com'],
             restrictToCurrentUser: false,
             restrictToScriptIds: 'customscript_del_sftptest_ss',
-            
+            //test!
           });
           credField.maxLenth = 32;
           form.addSubmitButton();
