@@ -1,0 +1,14 @@
+<scheduledscript scriptid="customscript_del_sftptestsavedssearch_ss">
+    <defaultfunction>execute</defaultfunction>
+    <name>DEL SFTP Test Saved Search SS</name>
+    <notifyowner>T</notifyowner>
+    <scriptfile>[/SuiteScripts/DestinyEntertainments/DEL SFTP Test/del_sftptest-savedsearch_ss.js]</scriptfile>
+    <scriptdeployments>
+        <scriptdeployment scriptid="customdeploy_del_sftptest_savedsearch_ss">
+            <isdeployed>T</isdeployed>
+            <loglevel>DEBUG</loglevel>
+            <status>NOTSCHEDULED</status>
+            <title>DEL SFTP Test Saved Search SS</title>
+        </scriptdeployment>
+    </scriptdeployments>
+</scheduledscript>
