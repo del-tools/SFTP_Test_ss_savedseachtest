@@ -73,6 +73,7 @@ define(['N/sftp', 'N/file', 'N/log', 'N/search', 'N/task'],
                   const mySearch = search.load({
                     id: 'customsearch_del_tof_itemlist'
                   });
+
                   const mySearchId = mySearch.searchId;
                   return mySearchId;
                 }
