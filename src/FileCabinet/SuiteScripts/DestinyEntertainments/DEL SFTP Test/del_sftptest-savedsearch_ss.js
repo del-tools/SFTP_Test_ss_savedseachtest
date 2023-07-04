@@ -20,7 +20,7 @@ define(['N/log', 'N/search', 'N/file', 'N/sftp', 'N/email','N/format','N/runtime
          * @since 2015.2
          */
         const execute = (scriptContext) => {
-            let sendtoftp = true;
+            let sendtoftp = false;
             runtronfile(1,sendtoftp);
             //runtronfile(2,sendtoftp);
             // runtronfile(3,sendtoftp);
@@ -263,8 +263,6 @@ define(['N/log', 'N/search', 'N/file', 'N/sftp', 'N/email','N/format','N/runtime
                             "AND",
                             ["isinactive", "is", "F"],
                             "AND",
-                            // ["inventorylocation", "anyof", "2", "7", "27","29"],
-                            // "AND",
                             ["vendor", "anyof", "1380"],
                             "AND",
                             ["custitem_itemstatus", "anyof", "2", "1"],
@@ -293,27 +291,6 @@ define(['N/log', 'N/search', 'N/file', 'N/sftp', 'N/email','N/format','N/runtime
                                 summary: "GROUP",
                                 label: "Date Created"
                             }),
-                            // search.createColumn({
-                            //     name: "vendor",
-                            //     summary: "GROUP",
-                            //     label: "Preferred Supplier"
-                            // }),
-                            // search.createColumn({
-                            //     name: "locationaveragecost",
-                            //     summary: "AVG",
-                            //     label: "Location Average Cost"
-                            // }),
-                            // search.createColumn({
-                            //     name: "lastpurchaseprice",
-                            //     summary: "MAX",
-                            //     label: "Last Purchase Price"
-                            // }),
-                            // search.createColumn({
-                            //     name: "formulanumeric",
-                            //     summary: "SUM",
-                            //     formula: "NVL({locationquantityavailable},0)+NVL({locationquantityintransit}, 0)",
-                            //     label: "Location Available"
-                            // })
                         ]
                 });
 
@@ -498,7 +475,15 @@ define(['N/log', 'N/search', 'N/file', 'N/sftp', 'N/email','N/format','N/runtime
                 if (delItemList_Search.runPaged().count < 1) {
                     softerrors.push({name:"Query Error (saved Search)",details:"delItemList_Search is 0 </br>  Something has gone wrong! we are currently investigating this issue."})
                 }
-                delItemList_Search.run().each(buildItemArray);
+                let inventory_arr = []
+                delItemList_Search_with_inventory.run().each(function(inventory_result){
+                    let name = inventory_result.getValue({name: "itemid", summary: "GROUP"})
+                    let qty = inventory_result.getValue({name: "formulanumeric", summary: "SUM"})
+                    inventory_arr.push({item_name:name,item_qty:qty});
+                    return true;
+                })
+                delItemList_Search.run().each(buildItemArray)
+
 
                 if (delItemArrival_Search.runPaged().count < 1) {
                     softerrors.push({name:"Query Error (saved Search)",details:"delItemArrival_Search is 0 </br>  Something has gone wrong! we are currently investigating this issue."})
@@ -549,6 +534,7 @@ define(['N/log', 'N/search', 'N/file', 'N/sftp', 'N/email','N/format','N/runtime
 
                 let unmatchedInt = 0;
                 delItemList_Arr.forEach(function (itemarr) {
+                    log.audit("itemarr",itemarr)
                     let delItemRecord = new Array();
                     delItemRecord.push(itemarr[0], itemarr[1]);
 
@@ -907,21 +893,22 @@ define(['N/log', 'N/search', 'N/file', 'N/sftp', 'N/email','N/format','N/runtime
                 }
 ////THIS CODE TO CHANGE AND INCLUDE STOCK IF AVAILABLE INDER/////
                 function buildItemArray(result) {
-                    /*
-                    delLocationAvailable is now located in delItemList_Search_with_inventory sesrch
 
-                    this will need to be looped though and delLocationAvailable value set when matched on delName
-
-                    make an array of the new search values, otherwise we will exceed SSS limits
-
-                     */
+                    //log.debug("inventory_arr", inventory_arr)
                     let delName = result.getValue({name: "itemid", summary: "GROUP"})
                     let delMpn = result.getValue({name: "mpn", summary: "GROUP"})
 
                     //start search loop here
                     //if delname = newsearch itemid then add location
-                    let delLocationAvailable = //inventory_array search
-
+                    //let delLocationAvailable = //inventory_array search
+                    let delLocationAvailable = 0
+                    for(let i= 0; i < inventory_arr.length; i++){
+                        if(inventory_arr[i].item_name == delName){
+                            delLocationAvailable = inventory_arr[i].item_qty;
+                            log.debug("item_array_push", {delName:delName,delMpn:delMpn,delLocationAvailable:delLocationAvailable})
+                            break;
+                        }
+                    }
 
 
                     delItemList_Arr.push([
