@@ -184,7 +184,15 @@ define(['N/log', 'N/search', 'N/file', 'N/sftp', 'N/email','N/format','N/runtime
                 // let delItemList_Search = search.load({
                 //     id: 'customsearch_del_script524_item_list'
                 // });
-                let delItemList_Search = search.create({
+
+
+
+                ///THIS SEARCH NEEDS TO CHANGE FROM HERE INDER///
+                /*
+
+
+                 */
+                let delItemList_Search_with_inventory = search.create({
                     type: "inventoryitem",
                     filters:
                         [
@@ -245,6 +253,73 @@ define(['N/log', 'N/search', 'N/file', 'N/sftp', 'N/email','N/format','N/runtime
                             })
                         ]
                 });
+
+
+                let delItemList_Search = search.create({
+                    type: "inventoryitem",
+                    filters:
+                        [
+                            ["type", "anyof", "InvtPart"],
+                            "AND",
+                            ["isinactive", "is", "F"],
+                            "AND",
+                            // ["inventorylocation", "anyof", "2", "7", "27","29"],
+                            // "AND",
+                            ["vendor", "anyof", "1380"],
+                            "AND",
+                            ["custitem_itemstatus", "anyof", "2", "1"],
+                            "AND",
+                            ["custitem_pro_item", "is", "F"]
+                        ],
+                    columns:
+                        [
+                            search.createColumn({
+                                name: "itemid",
+                                summary: "GROUP",
+                                label: "Name"
+                            }),
+                            search.createColumn({
+                                name: "mpn",
+                                summary: "GROUP",
+                                label: "MPN"
+                            }),
+                            search.createColumn({
+                                name: "salesdescription",
+                                summary: "GROUP",
+                                label: "Description"
+                            }),
+                            search.createColumn({
+                                name: "created",
+                                summary: "GROUP",
+                                label: "Date Created"
+                            }),
+                            // search.createColumn({
+                            //     name: "vendor",
+                            //     summary: "GROUP",
+                            //     label: "Preferred Supplier"
+                            // }),
+                            // search.createColumn({
+                            //     name: "locationaveragecost",
+                            //     summary: "AVG",
+                            //     label: "Location Average Cost"
+                            // }),
+                            // search.createColumn({
+                            //     name: "lastpurchaseprice",
+                            //     summary: "MAX",
+                            //     label: "Last Purchase Price"
+                            // }),
+                            // search.createColumn({
+                            //     name: "formulanumeric",
+                            //     summary: "SUM",
+                            //     formula: "NVL({locationquantityavailable},0)+NVL({locationquantityintransit}, 0)",
+                            //     label: "Location Available"
+                            // })
+                        ]
+                });
+
+                ////TOO HERE///
+
+
                 // let del7DaySales_Search = search.load({
                 //     id: 'customsearch_del_script524_7daysales'
                 // });
@@ -830,11 +905,25 @@ define(['N/log', 'N/search', 'N/file', 'N/sftp', 'N/email','N/format','N/runtime
                     //log.debug(delbackorder_Arr)
                     return true;
                 }
-
+////THIS CODE TO CHANGE AND INCLUDE STOCK IF AVAILABLE INDER/////
                 function buildItemArray(result) {
+                    /*
+                    delLocationAvailable is now located in delItemList_Search_with_inventory sesrch
+
+                    this will need to be looped though and delLocationAvailable value set when matched on delName
+
+                    make an array of the new search values, otherwise we will exceed SSS limits
+
+                     */
                     let delName = result.getValue({name: "itemid", summary: "GROUP"})
                     let delMpn = result.getValue({name: "mpn", summary: "GROUP"})
-                    let delLocationAvailable = result.getValue({name: "formulanumeric", summary: "SUM"})
+
+                    //start search loop here
+                    //if delname = newsearch itemid then add location
+                    let delLocationAvailable = //inventory_array search
+
+
+
                     delItemList_Arr.push([
                         delName,
                         delMpn,
@@ -843,6 +932,7 @@ define(['N/log', 'N/search', 'N/file', 'N/sftp', 'N/email','N/format','N/runtime
                     return true;
                 }
 
+                /////STOP EDITING///////
                 function Build7DaySalesArray(result) {
                     let delName = result.getValue({name: "itemid", summary: "GROUP"})
                     let delvalue = result.getValue({name: "formulanumeric", summary: "SUM"})
@@ -959,9 +1049,6 @@ define(['N/log', 'N/search', 'N/file', 'N/sftp', 'N/email','N/format','N/runtime
                     ]);
                     return true;
                 }
-
-
-
             } catch (e) {
                 email.send({
                     author: 17323496,
